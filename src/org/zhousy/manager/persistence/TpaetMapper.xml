@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zhousy.manager.persistence.TpaetMapper">
+
+	<!-- 查询全部部门信息 -->
+	<select id="findTpaet" resultType="Tpart">
+		select * from tpart where pstatus=0
+	</select>
+
+	<!--添加部门信息 -->
+	<insert id="addTpaet" parameterType="Tpart">
+		insert into tpart values(pid,#{pname},#{premark},0)
+	</insert>
+
+	<!-- 删除部门信息 修改部门状态 -->
+	<update id="deleteTpaet" parameterType="int">
+		update tpart set pstatus=1 where pid=#{pid}
+	</update>
+
+	<!-- 修改部门信息 -->
+	<update id="updateTpaet" parameterType="Tpart">
+		update tpart set pname=#{pname},premark=#{premark} where pid=#{pid}
+	</update>
+
+	<!-- 根据编号查询部门信息 -->
+	<select id="IDpart" parameterType="int" resultType="Tpart">
+		select * from tpart where pid=#{pid}
+	</select>
+
+	<!-- 查询部门下的所有员工 <select id="findTpaet" parameterType="int" resultMap="tpartResultMap"> 
+		select * from (select * from tpart where pid=#{pid})tpart left join temp 
+		on tpart.pid=temp.tpid </select> -->
+	<!-- 员工与部门的关系映射 <resultMap type="Tpart" id="tpartResultMap"> <id property="pid" 
+		column="pid"/> <result property="pname" column="pname" /> <result property="premark" 
+		column="premark" /> <collection property="emplist" ofType="Temp"> <id property="tid" 
+		column="tid"/> <result property="trealname" column="trealname" /> <result 
+		property="tsex" column="tsex" /> <result property="taddress" column="taddress" 
+		/> <result property="tage" column="tage" /> <result property="ttel" column="ttel" 
+		/> </collection> </resultMap> -->
+</mapper>

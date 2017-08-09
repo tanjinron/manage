@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zhousy.manager.persistence.TempMapper">
+
+	<!-- 查询全部部门信息 -->
+	<select id="findAllTEmp" resultMap="empResultMap">
+		select temp.*,tpart.pname from (select * from temp where temp.tstatus=0)temp
+		left join tpart on temp.tpid=tpart.pid
+	</select>
+	<!-- 添加员工信息 -->
+	<insert id="addTemp" parameterType="Temp">
+		insert into temp
+		values(tid,#{trealname},#{tpid.pid},#{tsex},#{taddress},#{tage},#{ttel},0)
+	</insert>
+	<!-- 删除员工信息 修改员工状态 -->
+	<update id="deleteTemp" parameterType="int">
+		update temp set tstatus=1 where tid=#{tid}
+	</update>
+	<!-- 修改员工信息 -->
+	<update id="updateTemp" parameterType="Temp">
+		update temp set
+		trealname=#{trealname},tpid=#{tpid.pid},tsex=#{tsex},taddress=#{taddress},tage=#{tage},ttel=#{ttel}
+		where tid=#{tid}
+	</update>
+	<!-- 根据部门查询员工信息 -->
+	<select id="TpaetANDTemp" parameterType="int" resultMap="empResultMap">
+		select * from (select * from temp where temp.tstatus=0 and tpid=#{pid})temp
+		left join tpart on temp.tpid=tpart.pid
+	</select>
+	<!-- 删除部门时 修改 员工状态为 2 -->
+	<update id="Tpartdelete" parameterType="int">
+		update temp set tstatus=2 where tid=#{tid}
+	</update>
+	<!-- 查询所有部门信息 并分页 -->
+	<select id="pageTemp" parameterType="java.util.Map" resultMap="empResultMap">
+		select temp.*,tpart.pname,tpart.pid from (select * from temp where
+		temp.tstatus=0)temp left join tpart on temp.tpid=tpart.pid limit
+		#{page.dbIndex},#{page.dbNumber}
+	</select>
+	<!-- 查询总记录条数 -->
+	<select id="countEMP" resultType="long">
+		select count(*) from temp where tstatus=0
+	</select>
+	<!-- 根据编号查询员工详细信息 -->
+	<select id="getIDemp" parameterType="int" resultMap="empResultMap">
+		select temp.*,tpart.pname,tpart.pid from (select * from temp where
+		temp.tstatus=0 and tid=#{tid})temp left join tpart on
+		temp.tpid=tpart.pid
+	</select>
+
+	<!-- 员工与部门的关系映射 -->
+	<resultMap type="Temp" id="empResultMap">
+		<id property="tid" column="tid" />
+		<result property="trealname" column="trealname" />
+		<result property="tsex" column="tsex" />
+		<result property="taddress" column="taddress" />
+		<result property="tage" column="tage" />
+		<result property="ttel" column="ttel" />
+		<collection property="tpid" ofType="Tpart">
+			<id property="pid" column="pid" />
+			<result property="pname" column="pname" />
+		</collection>
+	</resultMap>
+
+</mapper>

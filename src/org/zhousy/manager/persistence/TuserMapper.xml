@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zhousy.manager.persistence.TuserMapper">
+
+	<!-- 登录 -->
+	<select id="loginTuser" resultType="Tuser">
+		select * from tuser where gusername=#{gusername} and gpassword=#{gpassword}
+	</select>
+	<!-- 添加管理员 -->
+	<insert id="addTuser" parameterType="Tuser">
+		insert into tuser values(gid,#{grealname},#{gusername},#{gpassword});
+	</insert>
+	<!-- 修改管理员信息 -->
+	<update id="updateTuser" parameterType="Tuser">
+		update tuser set grealname=#{grealname},gusername=#{gusername} where
+		gid=#{gid}
+	</update>
+	<!-- 查询所有管理员 不查询当前管理员 -->
+	<select id="checkTuser" parameterType="int" resultType="Tuser">
+		select * from tuser where gid!=#{gid}
+	</select>
+	<!-- 登录 -->
+	<select id="getidTuser" parameterType="int" resultType="Tuser">
+		select * from tuser where gid=#{gid}
+	</select>
+</mapper>
